@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    
+    <!-- Enlace a Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- Enlace a Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Enlace a tu archivo CSS personalizado -->
+    <link rel="stylesheet" href="styles.css"> 
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Estilos adicionales para el menú */
+        .navbar {
+            background-color: #007bff; /* Color de fondo de la navbar */
+        }
+        .navbar-brand {
+            color: white !important; /* Color del texto del título */
+        }
+        .nav-link {
+            color: white !important; /* Color del texto del enlace */
+        }
+        .drawer {
+            background-color: #0056b3; /* Color de fondo del menú */
+            color: white; /* Color del texto */
+            position: fixed;
+            left: -250px; /* Oculto inicialmente */
+            transition: left 0.3s ease; /* Transición suave */
+            width: 250px;
+            height: 100%; /* Altura completa */
+            padding: 15px; /* Espaciado interno */
+            z-index: 1000; /* Asegúrate de que el menú esté por encima de otros elementos */
+        }
+        .drawer.open {
+            left: 0; /* Mostrar el menú cuando está abierto */
+        }
+        .drawer ul {
+            list-style-type: none; /* Sin viñetas */
+            padding: 0; /* Sin padding */
+        }
+        .drawer li {
+            margin-bottom: 15px; /* Espacio entre los botones */
+        }
+        .drawer a {
+            display: block; /* Hacer que el enlace ocupe todo el espacio */
+            padding: 10px; /* Espaciado interno para el botón */
+            color: white; /* Color del texto */
+            text-decoration: none; /* Sin subrayado */
+            border-radius: 4px; /* Bordes redondeados */
+            transition: background-color 0.3s; /* Transición de color de fondo */
+        }
+        .drawer a:hover {
+            background-color: #004085; /* Color de fondo al pasar el ratón */
+        }
+        .divider {
+            border-bottom: 1px solid #007bff; /* Línea de separación */
+            margin: 15px 0; /* Espacio arriba y abajo */
+        }
+        .chart-container {
+            margin-top: 20px; /* Espacio arriba del gráfico */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="ml-auto">
+                <button class="btn btn-light" id="toggleDrawer">
+                    <i class="fas fa-bars"></i> <!-- Icono de hamburguesa -->
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="drawer" id="drawer">
+        <ul>
+            <li><a class="nav-link" href="/dashboard">Dashboard 1</a></li>
+            <li><a class="nav-link" href="/dashboard2">Dashboard 2</a></li>
+            <li><a class="nav-link" href="/dashboard3">Dashboard 3</a></li>
+            <div class="divider"></div> <!-- Separador -->
+            <li><a class="nav-link" href="/auth/logout">Cerrar Sesión</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="dashboard">
+            <h2 class="text-center">Jugadores por Equipo</h2>
+            <div class="chart-container">
+                <canvas id="jugadoresChart"></canvas>
+            </div>
+            <h2 class="text-center">Lista de Jugadores</h2>
+            <table class="table table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Equipo</th>
+                        <th>Juego</th>
+                        <th>País</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Mostrar los datos de los jugadores -->
+                    <tr th:each="jugador : ${jugadores}">
+                        <td th:text="${jugador.id}"></td>
+                        <td th:text="${jugador.nombre}"></td>
+                        <td th:text="${jugador.apellido}"></td>
+                        <td th:text="${jugador.equipo.nombre}"></td>
+                        <td th:text="${jugador.juego}"></td>
+                        <td th:text="${jugador.pais}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Gráfico de Chart.js
+        const ctx = document.getElementById('jugadoresChart').getContext('2d');
+        const jugadoresPorEquipo = /*[[${jugadoresPorEquipo}]]*/ {};
+        const labels = Object.keys(jugadoresPorEquipo);
+        const data = Object.values(jugadoresPorEquipo);
+
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jugadores por Equipo',
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Función para abrir/cerrar el drawer
+        document.getElementById('toggleDrawer').addEventListener('click', function() {
+            const drawer = document.getElementById('drawer');
+            drawer.classList.toggle('open');
+        });
+
+        // Cerrar el drawer al hacer clic fuera de él
+        document.addEventListener('click', function(event) {
+            const drawer = document.getElementById('drawer');
+            const toggleButton = document.getElementById('toggleDrawer');
+            if (!drawer.contains(event.target) && !toggleButton.contains(event.target)) {
+                drawer.classList.remove('open');
+            }
+        });
+    </script>
+
+    <!-- jQuery y Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
