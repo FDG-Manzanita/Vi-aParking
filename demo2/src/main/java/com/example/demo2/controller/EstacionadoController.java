@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo2.Repository.EstacionadoRepository;
 import com.example.demo2.model.Estacionado;
 
-
 @RestController
 @RequestMapping("/api/estacionados")
 @CrossOrigin(origins = "*") // Permitir el acceso desde cualquier origen (CORS)
@@ -61,6 +60,16 @@ public class EstacionadoController {
                 .toList();
     }
 
+    // Obtener estacionados por tiempo estacionado mayor a un valor específico
+    @GetMapping("/byTiempoEstacionado/{minTiempo}")
+    public List<Estacionado> getEstacionadosByTiempoEstacionado(@PathVariable("minTiempo") Integer minTiempo) {
+        return estacionadoRepository.findAll()
+                .stream()
+                .filter(estacionado -> estacionado.getTiempoEstacionado() != null 
+                        && estacionado.getTiempoEstacionado() >= minTiempo)
+                .toList();
+    }
+
     // Crear un nuevo estacionado
     @PostMapping
     public ResponseEntity<Estacionado> createEstacionado(@RequestBody Estacionado estacionado) {
@@ -70,7 +79,7 @@ public class EstacionadoController {
 
     // Actualizar un estacionado existente
     @PutMapping("/{id}")
-    public ResponseEntity<Estacionado> updateEstacionado(@PathVariable("id") Integer id, 
+    public ResponseEntity<Estacionado> updateEstacionado(@PathVariable("id") Integer id,
                                                          @RequestBody Estacionado estacionado) {
         if (!estacionadoRepository.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

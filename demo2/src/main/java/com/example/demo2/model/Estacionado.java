@@ -25,11 +25,10 @@ public class Estacionado {
     @ManyToOne
     @JoinColumn(name = "ID_vehiculo", referencedColumnName = "idVehiculo")
     private Vehiculo vehiculo;
+@Column(name= "tiempo_estacionado")
+private Integer tiempoestacionado;
 
 
-    @ManyToOne
-    @JoinColumn(name = "ID_pagos", referencedColumnName = "idpagos")
-    private Pago pagos;
     // Getters and Setters
     public Integer getIdEstacionados() {
         return idEstacionados;
@@ -54,12 +53,12 @@ public class Estacionado {
     public void setVehiculo(Vehiculo vehiculo) {
         this.vehiculo = vehiculo;
     }
-    public Pago getPagos() {
-        return pagos;
+    public Integer getTiempoEstacionado() {
+        return tiempoestacionado;
     }
 
-
-    public void setPagos(Pago pagos) {
-        this.pagos = pagos;
+    // Setter para tiempoestacionado
+    public void setTiempoEstacionado(Integer tiempoestacionado) {
+        this.tiempoestacionado = tiempoestacionado;
     }
 }

@@ -22,6 +22,7 @@ class _AgregarEstacionadoScreenState extends State<AgregarEstacionadoScreen> {
     fetchVehiculos();
   }
 
+  // Obtener lista de estacionamientos
   Future<void> fetchEstacionamientos() async {
     final response =
         await http.get(Uri.parse('http://localhost:8080/api/estacionamientos'));
@@ -30,11 +31,11 @@ class _AgregarEstacionadoScreenState extends State<AgregarEstacionadoScreen> {
         estacionamientos = json.decode(response.body);
       });
     } else {
-      // Manejo de error
       print('Error al cargar estacionamientos');
     }
   }
 
+  // Obtener lista de vehículos
   Future<void> fetchVehiculos() async {
     final response =
         await http.get(Uri.parse('http://localhost:8080/api/vehiculos'));
@@ -43,11 +44,11 @@ class _AgregarEstacionadoScreenState extends State<AgregarEstacionadoScreen> {
         vehiculos = json.decode(response.body);
       });
     } else {
-      // Manejo de error
       print('Error al cargar vehiculos');
     }
   }
 
+  // Agregar vehículo estacionado con tiempo inicial en 0
   Future<void> agregarEstacionado() async {
     if (estacionamientoSeleccionado != null && vehiculoSeleccionado != null) {
       final response = await http.post(
@@ -56,20 +57,19 @@ class _AgregarEstacionadoScreenState extends State<AgregarEstacionadoScreen> {
         body: json.encode({
           'estacionamiento': {'idEstacionamiento': estacionamientoSeleccionado},
           'vehiculo': {'idVehiculo': vehiculoSeleccionado},
+          'tiempoEstacionado': 0 // Tiempo inicial en 0
         }),
       );
 
       if (response.statusCode == 201) {
-        // Si la solicitud es exitosa, regresamos a la pantalla anterior
+        // Regresar a la pantalla anterior si se agrega correctamente
         Navigator.pop(context);
       } else {
-        // Si algo falla, mostramos un mensaje de error
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al agregar el estacionado')),
         );
       }
     } else {
-      // Mostrar mensaje si falta completar algún campo
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content:
@@ -81,60 +81,125 @@ class _AgregarEstacionadoScreenState extends State<AgregarEstacionadoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Agregar Estacionado')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            DropdownButton<String>(
-              hint: Text('Seleccionar Estacionamiento'),
-              value: estacionamientoSeleccionado,
-              items: estacionamientos.map<DropdownMenuItem<String>>((item) {
-                return DropdownMenuItem<String>(
-                  value: item['idEstacionamiento'].toString(),
-                  child: Text(item['nombre']),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  estacionamientoSeleccionado = value;
-                });
-              },
+      appBar: AppBar(
+        title: Text('Agregar Estacionado'),
+        backgroundColor: Color(0xFF00B2E3), // Color principal en Pantone 00B2E3
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF00B2E3), Colors.lightBlue],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.car_repair,
+                  size: 100,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Agregar Estacionado',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Selecciona un estacionamiento y un vehículo',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                DropdownButton<String>(
+                  hint: Text('Seleccionar Estacionamiento'),
+                  value: estacionamientoSeleccionado,
+                  items: estacionamientos.map<DropdownMenuItem<String>>((item) {
+                    return DropdownMenuItem<String>(
+                      value: item['idEstacionamiento'].toString(),
+                      child: Text(item['nombre']),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      estacionamientoSeleccionado = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 16),
+                DropdownButton<String>(
+                  hint: Text('Seleccionar Vehículo'),
+                  value: vehiculoSeleccionado,
+                  items: vehiculos.map<DropdownMenuItem<String>>((item) {
+                    return DropdownMenuItem<String>(
+                      value: item['idVehiculo'].toString(),
+                      child: Text(item['patente']),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      vehiculoSeleccionado = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: agregarEstacionado,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Color(0xFF00B2E3), // Color del texto
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 80, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    'Agregar Estacionado',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AgregarVehiculoScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Color(0xFF00B2E3), // Color del texto
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 80, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    'Agregar Vehículo',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 16),
-            DropdownButton<String>(
-              hint: Text('Seleccionar Vehículo'),
-              value: vehiculoSeleccionado,
-              items: vehiculos.map<DropdownMenuItem<String>>((item) {
-                return DropdownMenuItem<String>(
-                  value: item['idVehiculo'].toString(),
-                  child: Text(item['patente']),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  vehiculoSeleccionado = value;
-                });
-              },
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: agregarEstacionado,
-              child: Text('Agregar Estacionado'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Navegar a la pantalla de agregar vehículo
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AgregarVehiculoScreen()),
-                );
-              },
-              child: Text('Agregar Vehículo'),
-            ),
-          ],
+          ),
         ),
       ),
     );

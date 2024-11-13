@@ -90,65 +90,134 @@ class _CrearIncidenteScreenState extends State<CrearIncidenteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Crear Incidente')),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            DropdownButton<String>(
-              value: selectedSector,
-              hint: Text('Seleccione un sector'),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedSector = newValue;
-                  selectedEstacionamiento = null; // Reset estacionamiento
-                  estacionamientos.clear(); // Clear estacionamientos
-                });
-                if (newValue != null) {
-                  _fetchEstacionamientos(int.parse(newValue));
-                }
-              },
-              items: sectores.map<DropdownMenuItem<String>>((sector) {
-                return DropdownMenuItem<String>(
-                  value: sector['idSector'].toString(),
-                  child: Text(sector['nombre']),
-                );
-              }).toList(),
-            ),
-            SizedBox(height: 16),
-            DropdownButton<String>(
-              value: selectedEstacionamiento,
-              hint: Text('Seleccione un estacionamiento'),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedEstacionamiento = newValue;
-                });
-              },
-              items: estacionamientos
-                  .map<DropdownMenuItem<String>>((estacionamiento) {
-                return DropdownMenuItem<String>(
-                  value: estacionamiento['idEstacionamiento'].toString(),
-                  child: Text(estacionamiento['nombre']),
-                );
-              }).toList(),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: tipoController,
-              decoration: InputDecoration(labelText: 'Tipo de Incidente'),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: descripcionController,
-              decoration:
-                  InputDecoration(labelText: 'Descripción del Incidente'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _crearIncidente,
-              child: Text('Crear Incidente'),
-            ),
-          ],
+      appBar: AppBar(
+        title: Text('Crear Incidente'),
+        backgroundColor: Color(0xFF00B2E3), // Color principal en Pantone 00B2E3
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF00B2E3), Colors.lightBlue],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              const Icon(
+                Icons.report_problem,
+                size: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Crear Incidente',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Por favor, completa los campos',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 20),
+              DropdownButton<String>(
+                value: selectedSector,
+                hint: Text('Seleccione un sector'),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedSector = newValue;
+                    selectedEstacionamiento = null; // Reset estacionamiento
+                    estacionamientos.clear(); // Clear estacionamientos
+                  });
+                  if (newValue != null) {
+                    _fetchEstacionamientos(int.parse(newValue));
+                  }
+                },
+                items: sectores.map<DropdownMenuItem<String>>((sector) {
+                  return DropdownMenuItem<String>(
+                    value: sector['idSector'].toString(),
+                    child: Text(sector['nombre']),
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: 16),
+              DropdownButton<String>(
+                value: selectedEstacionamiento,
+                hint: Text('Seleccione un estacionamiento'),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedEstacionamiento = newValue;
+                  });
+                },
+                items: estacionamientos
+                    .map<DropdownMenuItem<String>>((estacionamiento) {
+                  return DropdownMenuItem<String>(
+                    value: estacionamiento['idEstacionamiento'].toString(),
+                    child: Text(estacionamiento['nombre']),
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                controller: tipoController,
+                decoration: InputDecoration(
+                  labelText: 'Tipo de Incidente',
+                  labelStyle: TextStyle(color: Colors.white),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFF00B2E3)),
+                  ),
+                ),
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                controller: descripcionController,
+                decoration: InputDecoration(
+                  labelText: 'Descripción del Incidente',
+                  labelStyle: TextStyle(color: Colors.white),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFF00B2E3)),
+                  ),
+                ),
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _crearIncidente,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Color(0xFF00B2E3), // Color del texto
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                child: const Text(
+                  'Crear Incidente',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

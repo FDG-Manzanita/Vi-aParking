@@ -4,6 +4,39 @@ import 'package:app_estacionamientos_fiscalizador/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+// Pantalla de perfil
+class PerfilScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Perfil'),
+        backgroundColor: Color(0xFF00B2E3), // Color de fondo del app bar
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF00B2E3), Colors.lightBlue],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            'Aquí se muestra el perfil del usuario',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Pantalla de sectores
 class SectorScreen extends StatefulWidget {
   @override
   _SectorScreenState createState() => _SectorScreenState();
@@ -43,19 +76,27 @@ class _SectorScreenState extends State<SectorScreen> {
 
   // Función para navegar al perfil
   void goToProfile() {
-    Navigator.of(context).pushNamed('/profile');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => PerfilScreen()), // Navegar a PerfilScreen
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sectores')),
+      appBar: AppBar(
+        title: Text('Sectores'),
+        backgroundColor: Color(0xFF00B2E3), // Color de fondo del app bar
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration:
+                  BoxDecoration(color: Color(0xFF00B2E3)), // Fondo del Drawer
               child: Text(
                 'Menú',
                 style: TextStyle(color: Colors.white, fontSize: 24),
@@ -66,7 +107,7 @@ class _SectorScreenState extends State<SectorScreen> {
               title: Text('Perfil'),
               onTap: () {
                 Navigator.pop(context);
-                goToProfile();
+                goToProfile(); // Redirigir a la pantalla de perfil
               },
             ),
             ListTile(
@@ -80,23 +121,43 @@ class _SectorScreenState extends State<SectorScreen> {
           ],
         ),
       ),
-      body: ListView.builder(
-        itemCount: sectors.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(sectors[index]['nombre']),
-            onTap: () {
-              // Al presionar el sector, navegar a la pantalla de estacionamientos
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EstacionamientoScreen(
-                      sectorId: sectors[index]['idSector']),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF00B2E3), Colors.lightBlue],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: sectors.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              elevation: 5,
+              child: ListTile(
+                contentPadding: EdgeInsets.all(16),
+                title: Text(
+                  sectors[index]['nombre'],
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-              );
-            },
-          );
-        },
+                onTap: () {
+                  // Al presionar el sector, navegar a la pantalla de estacionamientos
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EstacionamientoScreen(
+                          sectorId: sectors[index]['idSector']),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
