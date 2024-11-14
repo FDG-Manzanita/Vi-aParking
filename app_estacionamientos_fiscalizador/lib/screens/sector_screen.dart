@@ -1,40 +1,9 @@
 import 'dart:convert';
 import 'package:app_estacionamientos_fiscalizador/screens/estacionamiento_screen.dart';
 import 'package:app_estacionamientos_fiscalizador/screens/login_screen.dart';
+import 'perfil.dart.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-// Pantalla de perfil
-class PerfilScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Perfil'),
-        backgroundColor: Color(0xFF00B2E3), // Color de fondo del app bar
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF00B2E3), Colors.lightBlue],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            'Aquí se muestra el perfil del usuario',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 // Pantalla de sectores
 class SectorScreen extends StatefulWidget {

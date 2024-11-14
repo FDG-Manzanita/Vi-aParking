@@ -15,7 +15,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="idUsuario")
+    @Column(name="id_usuario")
     private Integer idUsuario;
 
     @Column(name = "Nombres")
@@ -43,7 +43,7 @@ public class Usuario {
     @JoinColumn(name = "id_sector", referencedColumnName = "id_sector")
     private Sector sector;
 
-    @Column(name = "TipoUsuario")
+    @Column(name = "Tipo_Usuario")
     private short tipoUsuario;
 
     @Column(name = "Cedula_pas")

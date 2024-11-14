@@ -30,7 +30,7 @@ public class Viaje {
     private boolean estado;
 
     @ManyToOne
-    @JoinColumn(name = "UsuarioID", referencedColumnName = "idUsuario")
+    @JoinColumn(name = "UsuarioID", referencedColumnName = "id_usuario")
     private Usuario usuario;
 
     // Getters y Setters

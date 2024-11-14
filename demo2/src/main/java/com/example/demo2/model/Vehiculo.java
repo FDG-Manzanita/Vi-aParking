@@ -23,7 +23,7 @@ public class Vehiculo {
 
     // Relación con la tabla Usuario (ManyToOne)
     @ManyToOne
-    @JoinColumn(name = "usuario_id", referencedColumnName = "idUsuario") // Relaciona la columna "usuario_id" de la tabla vehiculos con la columna "idUsuario" de la tabla usuarios
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id_usuario") // Relaciona la columna "usuario_id" de la tabla vehiculos con la columna "idUsuario" de la tabla usuarios
     private Usuario usuario;
 
     // Getters y Setters
