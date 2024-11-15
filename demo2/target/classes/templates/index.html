@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Tiempo Total de Usuarios en Estacionamiento</title>
+        <!-- Enlace a Bootstrap CSS -->
+        <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("http://localhost:8081/api/pagos/kpi") // Cambia la URL si es necesario
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error de red: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.getElementById('estacionamientosTableBody');
+                    tableBody.innerHTML = ''; // Limpiar contenido previo
+
+                    // Agregar filas a la tabla
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        const cellNombre = document.createElement('td');
+                        const cellTiempo = document.createElement('td');
+
+                        cellNombre.textContent = item.nombreEstacionamiento;
+                        cellTiempo.textContent = item.totalTiempo;
+
+                        row.appendChild(cellNombre);
+                        row.appendChild(cellTiempo);
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al obtener datos:', error);
+                });
+        });
+    </script>
+        <style>
+            /* Estilos personalizados */
+            .navbar {
+                background-color: #113eb9; /* Celeste */
+            }
+            .navbar .nav-link, .navbar .navbar-brand {
+                color: white; /* Letras blancas */
+            }
+            .navbar .nav-link:hover {
+                color: #FFD700; /* Color dorado al pasar el mouse */
+            }
+        </style>
+        <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch("http://localhost:8081/api/incidentes/kpi1") // Cambia la URL si es necesario
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error de red: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.getElementById('incidentesTableBody');
+                tableBody.innerHTML = ''; // Limpiar contenido previo
+
+                // Agregar filas a la tabla
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    const cellNombre = document.createElement('td');
+                    const cellCount = document.createElement('td');
+
+                    cellNombre.textContent = item.nombre;
+                    cellCount.textContent = item.count;
+
+                    row.appendChild(cellNombre);
+                    row.appendChild(cellCount);
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener datos:', error);
+            });
+    });
+</script>
+
+        <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f8f9fa;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+    canvas {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+</style>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch("http://localhost:8081/api/pagos/kpi2") // Cambia la URL si es necesario
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error de red: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const nombresEstacionamientos = data.map(item => item.nombreEstacionamiento);
+                const estacionadosTotales = data.map(item => item.estacionadosTotal);
+
+                const ctx = document.getElementById('myChart').getContext('2d');
+                const myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: nombresEstacionamientos,
+                        datasets: [{
+                            label: 'Estacionamientos registrados',
+                            data: estacionadosTotales,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener datos:', error);
+            });
+    });    
+</script>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+document.addEventListener("DOMContentLoaded", function() {
+fetch("http://localhost:8081/api/incidentes/kpi2") // Cambia la URL si es necesario
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error de red: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const nombresEstacionamientos = data.map(item => item.tipo);
+        const estacionadosTotales = data.map(item => item.count);
+
+        const ctx = document.getElementById('myChart2').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: nombresEstacionamientos,
+                datasets: [{
+                    label: 'Tipo de incidentes mas frecuentes',
+                    data: estacionadosTotales,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error al obtener datos:', error);
+    });
+});
+
+
+</script>
+
+    </head>
+    <body>
+        <ul class="nav nav-underline">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page"
+                    href="#">FindMePark</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Dashboard</a>
+            </li>
+        </ul>
+
+        <div class="row g-0 text-center">
+            <div class="col-sm-6 col-md-8"> <div class="container mt-5">
+                    <h4 class="text-center"> </h4>
+                    <canvas id="myChart2" width="800" height="400"></canvas>
+                </div></div>
+            <div class="col-6 col-md-4"> <div class="container mt-5">
+                    <h4 class="text-center">Tiempo total en estacionamientos
+                        registrados</h4>
+                    <table class="table table-bordered table-striped mt-3">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre del Estacionamiento</th>
+                                <th>Tiempo Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incidentesTableBody">
+                            <!-- Las filas de la tabla se agregarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row g-0 text-center">
+            <div class="col-sm-6 col-md-8">
+                <div class="container mt-5">
+                    <canvas id="myChart" width="800" height="400"></canvas>
+                </div>
+            </div>
+            <div class="col-6 col-md-4"> <div class="container mt-5">
+                    <h4 class="text-center">Tiempo total de usuarios en
+                        estacionamiento</h4>
+                    <table class="table table-bordered table-striped mt-3">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre del Estacionamiento</th>
+                                <th>Tiempo Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="estacionamientosTableBody">
+                            <!-- Las filas de la tabla se agregarán aquí -->
+                        </tbody>
+                    </table>
+                </div></div>
+        </div>
+
+        <!-- Enlace a Bootstrap JS y dependencias (opcional) -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+</html>
