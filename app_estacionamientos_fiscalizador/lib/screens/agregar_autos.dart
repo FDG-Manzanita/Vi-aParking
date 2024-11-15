@@ -72,63 +72,81 @@ class _AgregarVehiculoScreenState extends State<AgregarVehiculoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agregar Vehículo'),
+        title: Text(
+          'Agregar Vehículo',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color(0xFF00B2E3),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF00B2E3), Colors.lightBlue],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      body: Column(
+        children: [
+          // Contenedor que actúa como divider
+          Container(
+            color: Colors.grey[300], // Color de la línea
+            height: 1, // Grosor de la línea
           ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(Icons.directions_car, size: 100, color: Colors.white),
-                SizedBox(height: 20),
-                Text(
-                  'Agregar Vehículo',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF00B2E3), Colors.lightBlue],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
-                SizedBox(height: 20),
-                _buildTextField('Patente del Vehículo', Icons.car_repair),
-                SizedBox(height: 20),
-                usuariosTipo2.isEmpty
-                    ? Center(child: CircularProgressIndicator())
-                    : DropdownButton<String>(
-                        hint: Text('Selecciona Usuario Tipo 2'),
-                        value: usuarioSeleccionado,
-                        items: usuariosTipo2
-                            .map<DropdownMenuItem<String>>((usuario) {
-                          return DropdownMenuItem<String>(
-                            value: usuario['idUsuario'].toString(),
-                            child: Text(
-                                '${usuario['nombre']} ${usuario['apellido']}'),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            usuarioSeleccionado = value;
-                          });
-                        },
+              ),
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.directions_car,
+                          size: 100, color: Colors.white),
+                      SizedBox(height: 20),
+                      Text(
+                        'Agregar Vehículo',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
-                SizedBox(height: 30),
-                _styledButton('Agregar Vehículo', agregarVehiculo),
-                SizedBox(height: 20),
-              ],
+                      SizedBox(height: 20),
+                      _buildTextField('Patente del Vehículo', Icons.car_repair),
+                      SizedBox(height: 20),
+                      usuariosTipo2.isEmpty
+                          ? Center(child: CircularProgressIndicator())
+                          : DropdownButton<String>(
+                              hint: Text(
+                                'Selecciona Usuario Tipo 2',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              value: usuarioSeleccionado,
+                              items: usuariosTipo2
+                                  .map<DropdownMenuItem<String>>((usuario) {
+                                return DropdownMenuItem<String>(
+                                  value: usuario['idUsuario'].toString(),
+                                  child: Text(
+                                      '${usuario['nombre']} ${usuario['apellido']}'),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  usuarioSeleccionado = value;
+                                });
+                              },
+                            ),
+                      SizedBox(height: 30),
+                      _styledButton('Agregar Vehículo', agregarVehiculo),
+                      SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

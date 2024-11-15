@@ -39,6 +39,9 @@ public class Pago {
     @JoinColumn(name = "idviaje", referencedColumnName = "idViajes")
     private Viaje viaje;
 
+    @ManyToOne
+    @JoinColumn(name = "id_estacionamientos", referencedColumnName = "Id_Estacionamiento")
+    private Estacionamiento estacionamiento;
     // Getters y Setters
 
     public Integer getIdPago() {

@@ -1,130 +1,94 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-class PerfilScreen extends StatelessWidget {
-  const PerfilScreen({super.key});
+class PerfilScreen extends StatefulWidget {
+  @override
+  _PerfilScreenState createState() => _PerfilScreenState();
+}
+
+class _PerfilScreenState extends State<PerfilScreen> {
+  Map<String, dynamic>? usuarioData;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarDatosUsuario();
+  }
+
+  Future<void> _cargarDatosUsuario() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? idUsuario = prefs.getInt('id_usuario');
+    if (idUsuario != null) {
+      final response = await http.get(
+        Uri.parse('http://localhost:8080/api/usuarios/$idUsuario'),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          usuarioData = json.decode(response.body);
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perfil'),
-        backgroundColor:
-            const Color(0xFF00B2E3), // Color principal en Pantone 00B2E3
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Foto de perfil
-                const CircleAvatar(
-                  radius: 60,
-                  backgroundImage: NetworkImage(
-                      'https://i0.wp.com/codigoespagueti.com/wp-content/uploads/2023/07/jujutsu-kaisen-gojo-fanart-husbando.jpg'), // Imagen de perfil (reemplazar con URL real)
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Gojo Satoru',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Datos de la Cuenta',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                _buildProfileDetail('Nombre Completo', 'Gojo Satoru'),
-                const SizedBox(height: 10),
-                _buildProfileDetail('Email', 'ElMasFuerte@Gojo.com'),
-                const SizedBox(height: 10),
-                _buildProfileDetail('Número de Teléfono', '+569 7434 5161'),
-                const SizedBox(height: 10),
-                _buildProfileDetail('Tipo de Usuario', 'Residente'),
-                const SizedBox(height: 10),
-                _buildProfileDetail('Dirección', 'Tokio, Japón'),
-                const SizedBox(height: 10),
-                _buildProfileDetail('RUT', '20.948.050-K'),
-                const SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    // Acción al presionar el botón (por ejemplo, editar perfil)
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xFF00B2E3),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: const Text(
-                    'Editar Perfil',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        title: const Text(
+          'Perfil',
+          style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: const Color(0xFF00B2E3),
       ),
+      body: usuarioData == null
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  // Avatar de perfil
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundImage: NetworkImage(
+                        'https://i0.wp.com/codigoespagueti.com/wp-content/uploads/2023/07/jujutsu-kaisen-gojo-fanart-husbando.jpg'),
+                  ),
+                  const SizedBox(height: 20),
+                  // Nombre y Apellidos
+                  Text(
+                    '${usuarioData?['nombre'] ?? 'N/A'} ${usuarioData?['apellido'] ?? 'N/A'}',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Detalles del perfil
+                  _buildProfileDetail('Email', usuarioData?['email'] ?? 'N/A'),
+                  _buildProfileDetail('Teléfono',
+                      usuarioData?['telefono']?.toString() ?? 'N/A'),
+                  _buildProfileDetail(
+                      'Dirección', usuarioData?['Direccion'] ?? 'N/A'),
+                  _buildProfileDetail('Tipo Usuario',
+                      usuarioData?['tipoUsuario']?.toString() ?? 'N/A'),
+                ],
+              ),
+            ),
     );
   }
 
+  // Widget para mostrar los detalles del perfil
   Widget _buildProfileDetail(String label, String value) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 2), // Cambia la posición del sombreado
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.all(16.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: Text(
-              '$label:',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-              ),
-              textAlign: TextAlign.right,
-            ),
-          ),
+          Text('$label:'),
+          Text(value),
         ],
       ),
     );

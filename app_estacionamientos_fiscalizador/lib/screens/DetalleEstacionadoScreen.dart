@@ -44,7 +44,10 @@ class _DetalleEstacionadoScreenState extends State<DetalleEstacionadoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalles del Estacionado'),
+        title: const Text(
+          'Detalles del Estacionado',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor:
             const Color(0xFF00B2E3), // Mismo color que en PerfilScreen
       ),

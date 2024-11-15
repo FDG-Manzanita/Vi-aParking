@@ -56,7 +56,10 @@ class _SectorScreenState extends State<SectorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sectores'),
+        title: Text(
+          'Sectores',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color(0xFF00B2E3), // Color de fondo del app bar
       ),
       drawer: Drawer(
@@ -90,43 +93,55 @@ class _SectorScreenState extends State<SectorScreen> {
           ],
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF00B2E3), Colors.lightBlue],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      body: Column(
+        children: [
+          // Divider entre el AppBar y el body
+          Container(
+            color: Colors.grey[300], // Color de la línea
+            height: 1, // Grosor de la línea
           ),
-        ),
-        child: ListView.builder(
-          itemCount: sectors.length,
-          itemBuilder: (context, index) {
-            return Card(
-              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 5,
-              child: ListTile(
-                contentPadding: EdgeInsets.all(16),
-                title: Text(
-                  sectors[index]['nombre'],
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Expanded(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF00B2E3), Colors.lightBlue],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
-                onTap: () {
-                  // Al presionar el sector, navegar a la pantalla de estacionamientos
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EstacionamientoScreen(
-                          sectorId: sectors[index]['idSector']),
+              ),
+              child: ListView.builder(
+                itemCount: sectors.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 5,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(16),
+                      title: Text(
+                        sectors[index]['nombre'],
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      onTap: () {
+                        // Al presionar el sector, navegar a la pantalla de estacionamientos
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EstacionamientoScreen(
+                                sectorId: sectors[index]['idSector']),
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
               ),
-            );
-          },
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }

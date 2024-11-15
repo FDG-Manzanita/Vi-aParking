@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:app_estacionamientos_fiscalizador/screens/sector_screen.dart'; // Asegúrate de crear esta pantalla
+import 'package:shared_preferences/shared_preferences.dart'; // Para guardar el id_usuario
+import 'package:app_estacionamientos_fiscalizador/screens/sector_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -21,11 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final String email = _emailController.text;
     final String password = _passwordController.text;
-
-    // URL de la API (asegúrate de cambiar esto a la correcta)
     final String baseUrl = 'http://localhost:8080/api/usuarios/login';
 
     try {
+      // Llamada a la API con los datos del login
       final response = await http.post(
         Uri.parse(baseUrl),
         body: {
@@ -39,20 +39,34 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       if (response.statusCode == 200) {
-        // Si el login es exitoso, redirige a SectoresScreen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SectorScreen()),
-        );
+        final data = json.decode(response.body);
+
+        // Verificamos que la respuesta tenga el `id_usuario`
+        if (data.containsKey('id_usuario')) {
+          final int idUsuario = data['id_usuario'];
+
+          // Guardar idUsuario usando SharedPreferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('id_usuario', idUsuario);
+
+          // Navegar a la pantalla de Sectores
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => SectorScreen()),
+          );
+        } else {
+          // Si no se recibe el `id_usuario`, mostrar error
+          _showErrorDialog('Error al obtener la información del usuario');
+        }
       } else {
-        // Si el login falla (credenciales incorrectas o usuario no autorizado)
+        // Si el login falla (credenciales incorrectas)
         _showErrorDialog('Credenciales inválidas o usuario no autorizado');
       }
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
-      // En caso de error de red o problemas con la solicitud
+      // Error de conexión o problema de red
       _showErrorDialog('Error de conexión, por favor intente nuevamente');
     }
   }
@@ -62,14 +76,14 @@ class _LoginScreenState extends State<LoginScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Error'),
+        title: const Text('Error'),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -92,7 +106,6 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Icon(
                   Icons.account_circle,
@@ -116,14 +129,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 _buildTextField('Contraseña', true, _passwordController,
                     Icons.lock_outline),
                 const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _styledButton('Ingresar', _login),
-                    const SizedBox(width: 10),
-                  ],
-                ),
+                _styledButton('Ingresar', _login),
                 const SizedBox(height: 20),
+                if (_isLoading) const CircularProgressIndicator(),
               ],
             ),
           ),
@@ -132,6 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // Método para construir campos de texto
   Widget _buildTextField(String hintText, bool obscureText,
       TextEditingController controller, IconData icon) {
     return TextField(
@@ -139,19 +148,20 @@ class _LoginScreenState extends State<LoginScreen> {
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.white),
-        prefixIcon: Icon(icon, color: Colors.white),
+        hintStyle: const TextStyle(color: Colors.black), // Hints en negro
+        prefixIcon: Icon(icon, color: Colors.black), // Icono en negro
         filled: true,
-        fillColor: Colors.transparent,
+        fillColor: Colors.white, // Fondo blanco
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
         ),
       ),
-      style: const TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.black), // Texto en negro
     );
   }
 
+  // Método para construir el botón de ingresar
   Widget _styledButton(String text, VoidCallback onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
@@ -160,15 +170,12 @@ class _LoginScreenState extends State<LoginScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
-        backgroundColor: Colors.white, // Fondo blanco
-        foregroundColor: Colors.black, // Texto negro
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
       child: Text(
         text,
-        style: const TextStyle(
-          color: Colors.black,
-          fontSize: 18,
-        ),
+        style: const TextStyle(fontSize: 18),
       ),
     );
   }

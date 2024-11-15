@@ -25,9 +25,9 @@ public class Estacionado {
     @ManyToOne
     @JoinColumn(name = "ID_vehiculo", referencedColumnName = "idVehiculo")
     private Vehiculo vehiculo;
-@Column(name= "tiempo_estacionado")
-private Integer tiempoestacionado;
 
+    @Column(name= "tiempo_estacionado")
+    private Integer tiempoEstacionado;
 
     // Getters and Setters
     public Integer getIdEstacionados() {
@@ -53,12 +53,12 @@ private Integer tiempoestacionado;
     public void setVehiculo(Vehiculo vehiculo) {
         this.vehiculo = vehiculo;
     }
+
     public Integer getTiempoEstacionado() {
-        return tiempoestacionado;
+        return tiempoEstacionado;
     }
 
-    // Setter para tiempoestacionado
-    public void setTiempoEstacionado(Integer tiempoestacionado) {
-        this.tiempoestacionado = tiempoestacionado;
+    public void setTiempoEstacionado(Integer tiempoEstacionado) {
+        this.tiempoEstacionado = tiempoEstacionado;
     }
 }

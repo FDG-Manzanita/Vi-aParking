@@ -1,6 +1,7 @@
 package com.example.demo2.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -45,12 +46,15 @@ public class UsuarioController {
     // Endpoint para autenticación, solo permite usuarios con tipoUsuario = 2
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String email, @RequestParam String contraseña) {
-        boolean autenticado = verificarCredenciales(email, contraseña);
-        if (autenticado) {
-            return ResponseEntity.ok("Login exitoso");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas o usuario no autorizado");
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            if (usuario.getContraseña().equals(contraseña) && usuario.getTipoUsuario() == 2) {
+                // Devuelve el id del usuario y el mensaje de éxito
+                return ResponseEntity.ok().body(Map.of("message", "Login exitoso", "id_usuario", usuario.getIdUsuario()));
+            }
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas o usuario no autorizado");
     }
 
     // Obtener todos los usuarios
